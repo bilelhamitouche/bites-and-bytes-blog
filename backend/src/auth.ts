@@ -4,6 +4,8 @@ import { JWTPayload } from "hono/utils/jwt/types";
 import { HTTPException } from "hono/http-exception";
 import * as bcrypt from "bcrypt";
 import { createUser, getUserByEmail } from "../db/users";
+import { getCookie, setCookie } from "hono/cookie";
+import { bearerAuth } from "hono/bearer-auth";
 
 type Env = {
   Variables: {
@@ -13,15 +15,19 @@ type Env = {
 
 const app = new Hono<Env>();
 
+export const authMiddleware = bearerAuth({
+  verifyToken: async (token, c) => {
+    return token === getCookie(c, "token");
+  },
+});
+
 app.post("/login", async (c) => {
   const { email, password } = await c.req.json();
   const user = await getUserByEmail(email);
-  console.log(user);
   if (!user) {
     throw new HTTPException(401, { message: "Invalid email" });
   }
   const isMatch = await bcrypt.compare(password, user.password);
-  console.log(isMatch);
   if (!isMatch) {
     throw new HTTPException(401, { message: "Invalid password" });
   }
@@ -30,6 +36,9 @@ app.post("/login", async (c) => {
     exp: Math.floor(Date.now() / 100) * 60 * 5,
   };
   const token = await sign(payload, process.env.JWT_SECRET as string);
+  setCookie(c, "token", token, {
+    httpOnly: true,
+  });
   return c.json({ token });
 });
 
