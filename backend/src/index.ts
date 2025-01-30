@@ -1,28 +1,34 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import auth, { authMiddleware } from "./auth";
+import posts from "./posts";
+import users from "./users";
+import comments from "./comments";
+import { Env } from "./types";
 
 // App initialization
-const app = new Hono().basePath("/api");
+const app = new Hono<Env>().basePath("/api");
 
 const routes = ["/posts/*", "/comments/*", "/users/*"];
 
 // Middleware
 app.use(cors({ origin: ["", ""] }));
-
-// Routers
-app.route("/auth", auth);
 routes.forEach((route) => {
   app.use(route, authMiddleware);
 });
-app.get("/posts", (c) => {
-  return c.html("Hello world from protected route");
-});
 
+// Routers
+app.route("/auth", auth);
+app.route("/posts", posts);
+app.route("/users", users);
+app.route("/comments", comments);
+
+// Error middleware
 app.onError(async (err, c) => {
   return c.json({ message: "Error occured", err: err });
 });
 
+// Not found middleware
 app.notFound((c) => {
   return c.json({ error: "Route not found 404" });
 });
