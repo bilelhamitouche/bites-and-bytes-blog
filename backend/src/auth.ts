@@ -1,25 +1,32 @@
 import { Hono } from "hono";
-import { sign } from "hono/jwt";
+import { decode, sign } from "hono/jwt";
 import { JWTPayload } from "hono/utils/jwt/types";
 import { HTTPException } from "hono/http-exception";
 import * as bcrypt from "bcrypt";
-import { createUser, getUserByEmail } from "../db/users";
 import { getCookie, setCookie } from "hono/cookie";
 import { bearerAuth } from "hono/bearer-auth";
-
-type Env = {
-  Variables: {
-    JWT_SECRET: string;
-  };
-};
+import { Factory } from "hono/factory";
+import { createUser, getUserByEmail } from "../db/users";
+import { Env } from "./types";
 
 const app = new Hono<Env>();
+
+const factory = new Factory();
 
 export const authMiddleware = bearerAuth({
   verifyToken: async (token, c) => {
     return token === getCookie(c, "token");
   },
 });
+
+export const authorizeAdminMiddleware = factory.createMiddleware(
+  async (c, next) => {
+    const token = decode(
+      c.req.header("Authorization")?.split(" ")[1] as string,
+    );
+    if (token.payload.role === "ADMIN") await next();
+  },
+);
 
 app.post("/login", async (c) => {
   const { email, password } = await c.req.json();
@@ -32,7 +39,10 @@ app.post("/login", async (c) => {
     throw new HTTPException(401, { message: "Invalid password" });
   }
   const payload: JWTPayload = {
+    id: user.id,
+    username: user.username,
     sub: user.email,
+    role: user.role,
     exp: Math.floor(Date.now() / 100) * 60 * 5,
   };
   const token = await sign(payload, process.env.JWT_SECRET as string);
