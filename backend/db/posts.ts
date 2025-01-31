@@ -45,6 +45,31 @@ async function createPost(title: string, content: string) {
   }
 }
 
+async function updatePost(
+  id: number,
+  title: string,
+  content: string,
+  published: boolean,
+) {
+  try {
+    const updatedPost = await prisma.post.update({
+      where: {
+        id,
+      },
+      data: {
+        ...(title && { title }),
+        ...(content && { content }),
+        ...(published && { published }),
+      },
+    });
+    return updatedPost;
+  } catch (err) {
+    throw new Error("Cannot update post");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function deletePost(id: number) {
   try {
     const post = await prisma.post.delete({
@@ -60,4 +85,4 @@ async function deletePost(id: number) {
   }
 }
 
-export { getPosts, getPostById, createPost, deletePost };
+export { getPosts, getPostById, createPost, updatePost, deletePost };
