@@ -26,16 +26,39 @@ async function getCommentsByPost(postId: number) {
   }
 }
 
-async function createComment(content: string, authorId: number) {
+async function createComment(
+  content: string,
+  authorId: number,
+  postId: number,
+) {
   try {
     await prisma.comment.create({
       data: {
         content,
         authorId,
+        postId,
       },
     });
   } catch (err) {
     throw new Error("Cannot create comment");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function updateComment(id: number, content: string) {
+  try {
+    const updatedComment = await prisma.comment.update({
+      where: {
+        id,
+      },
+      data: {
+        content,
+      },
+    });
+    return updatedComment;
+  } catch (err) {
+    throw new Error("Cannot update comment");
   } finally {
     await prisma.$disconnect();
   }
@@ -56,4 +79,10 @@ async function deleteComment(id: number) {
   }
 }
 
-export { getComments, getCommentsByPost, createComment, deleteComment };
+export {
+  getComments,
+  getCommentsByPost,
+  createComment,
+  updateComment,
+  deleteComment,
+};
