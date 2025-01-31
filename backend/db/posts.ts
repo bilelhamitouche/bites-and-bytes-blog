@@ -15,6 +15,24 @@ async function getPosts() {
   }
 }
 
+async function getPublishedPosts() {
+  try {
+    const posts = await prisma.post.findMany({
+      where: {
+        published: true,
+      },
+      include: {
+        comments: true,
+      },
+    });
+    return posts;
+  } catch (err) {
+    throw new Error("Cannot get posts");
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
 async function getPostById(postId: number) {
   try {
     const post = await prisma.post.findUnique({
@@ -85,4 +103,11 @@ async function deletePost(id: number) {
   }
 }
 
-export { getPosts, getPostById, createPost, updatePost, deletePost };
+export {
+  getPosts,
+  getPublishedPosts,
+  getPostById,
+  createPost,
+  updatePost,
+  deletePost,
+};
