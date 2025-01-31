@@ -24,7 +24,12 @@ export const authorizeAdminMiddleware = factory.createMiddleware(
     const token = decode(
       c.req.header("Authorization")?.split(" ")[1] as string,
     );
-    if (token.payload.role === "ADMIN") await next();
+    if (token.payload.role === "ADMIN") {
+      await next();
+    } else {
+      c.status(403);
+      return c.json({ message: "Unauthorized to complete this action" });
+    }
   },
 );
 
