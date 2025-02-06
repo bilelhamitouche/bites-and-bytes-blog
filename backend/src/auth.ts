@@ -1,5 +1,5 @@
-import { Hono } from "hono";
-import { decode, sign } from "hono/jwt";
+import { Hono, Next } from "hono";
+import { decode, sign, verify } from "hono/jwt";
 import { JWTPayload } from "hono/utils/jwt/types";
 import { HTTPException } from "hono/http-exception";
 import * as bcrypt from "bcrypt";
@@ -8,22 +8,41 @@ import { bearerAuth } from "hono/bearer-auth";
 import { Factory } from "hono/factory";
 import { createUser, getUserByEmail } from "../db/users";
 import { Env } from "./types";
+import { Context } from "hono/jsx";
 
 const app = new Hono<Env>();
 
+const JWT_SECRET = process.env.JWT_SECRET as string;
+
 const factory = new Factory();
 
-export const authMiddleware = bearerAuth({
-  verifyToken: async (token, c) => {
-    return token === getCookie(c, "token");
-  },
-});
+// export const authMiddleware = bearerAuth({
+//   // verifyToken: async (token, c) => {
+//   try {
+//     await verify(token, JWT_SECRET);
+//     return true;
+//   } catch {
+//     return false;
+//   }
+// },
+//});
+
+export const authMiddleware = async (c: Context, next: Next) => {
+  const token = getCookie(c, "token");
+  if (!token) {
+    return c.json({ message: "Unauthorized to do this" }, 401);
+  }
+  try {
+    await verify(token, JWT_SECRET);
+    await next();
+  } catch {
+    return c.json({ message: "Unauthorized" }, 401);
+  }
+};
 
 export const authorizeAdminMiddleware = factory.createMiddleware(
   async (c, next) => {
-    const token = decode(
-      c.req.header("Authorization")?.split(" ")[1] as string,
-    );
+    const token = decode(getCookie(c, "token") as string);
     if (token.payload.role === "ADMIN") {
       await next();
     } else {
