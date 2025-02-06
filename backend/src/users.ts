@@ -17,8 +17,8 @@ app.post("/", authorizeAdminMiddleware, async (c) => {
 });
 
 app.delete("/:id", authorizeAdminMiddleware, async (c) => {
-  const { id } = await c.req.json();
-  await deleteUser(id);
+  const id = c.req.param("id");
+  await deleteUser(parseInt(id));
   return c.json({ message: "User deleted successfully" }, 202);
 });
 
