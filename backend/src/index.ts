@@ -4,6 +4,7 @@ import auth, { authMiddleware } from "./auth";
 import posts from "./posts";
 import users from "./users";
 import comments from "./comments";
+import stats from "./stats";
 import { Env } from "./types";
 
 // App initialization
@@ -22,6 +23,7 @@ app.route("/auth", auth);
 app.route("/posts", posts);
 app.route("/users", users);
 app.route("/comments", comments);
+app.route("/stats", stats);
 
 // Error middleware
 app.onError(async (err, c) => {
