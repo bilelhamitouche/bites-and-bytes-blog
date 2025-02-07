@@ -1,0 +1,34 @@
+@import "tailwindcss";
+@plugin "daisyui";
+
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 400;
+  src: url("/fonts/Geist-Regular.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 700;
+  src: url("/fonts/Geist-Bold.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 500;
+  src: url("/fonts/Geist-SemiBold.ttf") format("ttf");
+}
+
+@font-face {
+  font-family: Geist;
+  font-style: normal;
+  font-weight: 900;
+  src: url("/fonts/Geist-ExtraBold.ttf") format("ttf");
+}
+
+html {
+  font-family: "Geist", sans-serif;
+}
