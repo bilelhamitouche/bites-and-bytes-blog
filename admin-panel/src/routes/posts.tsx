@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Breadcrumbs from "../components/Breadcrumbs";
 import { Rss } from "lucide-react";
+import DataTable from "../components/DataTable";
 
 export const Route = createFileRoute("/posts")({
   component: RouteComponent,
@@ -8,8 +9,9 @@ export const Route = createFileRoute("/posts")({
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="flex flex-col gap-8 w-full">
       <Breadcrumbs text="Posts" link="/posts" icon={<Rss size={18} />} />
+      <DataTable />
     </div>
   );
 }
