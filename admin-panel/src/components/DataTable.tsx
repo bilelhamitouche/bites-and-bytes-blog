@@ -26,8 +26,8 @@ function DataTable({}: Props) {
             <td>*****</td>
             <td className="font-bold">USER</td>
             <th>
-              <button className="btn btn-ghost p-2 rounded-full">
-                <EllipsisVertical />
+              <button className="btn btn-ghost p-2.5 rounded-full">
+                <EllipsisVertical size={18} />
               </button>
             </th>
           </tr>
