@@ -8,7 +8,7 @@ interface Props {
 
 function DashboardCard({ text, icon, count }: Props) {
   return (
-    <div className="flex flex-col gap-4 rounded-xl border-2 border-base-200 p-8">
+    <div className="flex flex-col gap-4 rounded-xl p-8 shadow-md shadow-base-300">
       <div className="flex justify-between items-center">
         <span className="text-base font-semibold">Total {text}</span>
         {icon}
