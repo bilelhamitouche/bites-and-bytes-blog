@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard } from "lucide-react";
+import { LayoutDashboard, Menu } from "lucide-react";
 import { ReactNode } from "react";
 
 interface Props {
@@ -10,20 +10,28 @@ interface Props {
 
 function Breadcrumbs({ text, link, icon }: Props) {
   return (
-    <div className="breadcrumbs text-sm">
-      <ul>
-        <li>
-          <Link to="/">
-            <LayoutDashboard size={18} />
-          </Link>
-        </li>
-        <li>
-          <Link to={link} className="flex gap-2 items-center">
-            {icon}
-            {text}
-          </Link>
-        </li>
-      </ul>
+    <div className="flex w-full justify-between items-center">
+      <div className="breadcrumbs text-sm">
+        <ul>
+          <li>
+            <Link to="/">
+              <LayoutDashboard size={18} />
+            </Link>
+          </li>
+          <li>
+            <Link to={link} className="flex gap-2 items-center">
+              {icon}
+              {text}
+            </Link>
+          </li>
+        </ul>
+      </div>
+      <label
+        htmlFor="my-drawer-2"
+        className="btn btn-primary btn-sm drawer-button md:hidden"
+      >
+        <Menu size={18} />
+      </label>
     </div>
   );
 }
