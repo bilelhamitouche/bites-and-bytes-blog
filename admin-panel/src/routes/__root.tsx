@@ -6,18 +6,12 @@ import { LayoutDashboard, MessageCircle, Rss, User } from "lucide-react";
 export const Route = createRootRoute({
   component: () => (
     <>
-      <div className="drawer lg:drawer-open">
+      <div className="drawer md:drawer-open">
         <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
         <div className="drawer-content flex">
-          <main className="p-4 w-full">
+          <main className="p-4 w-full flex items-center justify-between md:items-start">
             <Outlet />
           </main>
-          <label
-            htmlFor="my-drawer-2"
-            className="btn btn-primary drawer-button lg:hidden"
-          >
-            Open drawer
-          </label>
         </div>
         <div className="drawer-side">
           <label
