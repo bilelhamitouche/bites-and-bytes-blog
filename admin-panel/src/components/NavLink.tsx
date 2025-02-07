@@ -11,7 +11,7 @@ function NavLink({ to, text, icon }: Props) {
   return (
     <Link
       to={to}
-      className="[&.active]:bg-primary [&.active]:text-white p-2 rounded-lg hover:bg-base-100 flex gap-2 transition-colors duration-100"
+      className="[&.active]:bg-primary [&.active]:text-primary-content p-2 rounded-lg hover:bg-base-100 flex gap-2 transition-colors duration-100 shadow-sm items-center"
     >
       {icon} {text}
     </Link>
